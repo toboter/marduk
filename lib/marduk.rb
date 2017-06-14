@@ -1,3 +1,9 @@
+require 'marduk/models/actable'
+require 'marduk/record_activity'
+require 'active_record'
+
+ActiveRecord::Base.send :extend, Marduk::RecordActivity
+
 require "marduk/engine"
 
 module Marduk
@@ -33,6 +39,10 @@ module Marduk
   def authorize
     redirect_to root_url, alert: "Not authorized. Please sign in." if current_user.nil?
   end
+
+  def administrative
+    redirect_to root_url, alert: "You need administrative priviledges." if !current_user.app_admin
+  end
   
   # The current_user is logged out automatically and redirected to root if the access_token is expired.
   def check_token!
@@ -42,5 +52,7 @@ module Marduk
       
       redirect_to root_url, notice: 'Access token expired. You have been logged out.'
     end
-  end  
+  end
+
+
 end

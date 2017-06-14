@@ -6,5 +6,6 @@ class CreateMemberships < ActiveRecord::Migration[5.0]
 
       t.timestamps
     end
+    add_index :memberships, [:group_id, :user_id], unique: true
   end
 end
