@@ -1,16 +1,21 @@
-require 'marduk/models/actable'
-require 'marduk/record_activity'
-require 'active_record'
-
-ActiveRecord::Base.send :extend, Marduk::RecordActivity
-
 require "marduk/engine"
 
 module Marduk
   extend ActiveSupport::Concern
+  
   included do
     before_action :check_token!
     before_action :init_session_per_page
+
+    around_action :set_current_user
+
+    def set_current_user
+      User.current = current_user
+      yield
+    ensure
+      # to address the thread variable leak issues in Puma/Thin webserver
+      User.current = nil
+    end
 
     rescue_from OAuth2::Error do |exception|
       if exception.response.status == 401
@@ -20,6 +25,7 @@ module Marduk
         redirect_to root_url, alert: "Access token expired, try signing in again."
       end
     end
+    
   end
   
   def init_session_per_page
@@ -53,6 +59,5 @@ module Marduk
       redirect_to root_url, notice: 'Access token expired. You have been logged out.'
     end
   end
-
 
 end

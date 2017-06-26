@@ -7,7 +7,21 @@ class User < ApplicationRecord
 
   validates :name, uniqueness: true
 
-  # can_edit? Resource can_read? Resource by shareable_model through sharer
+  def self.current
+    Thread.current[:current_user]
+  end
+
+  def self.current=(usr)
+    Thread.current[:current_user] = usr
+  end
+
+  def can_edit?(resource) # overrides sharer can_edit?
+    check_resource(resource)
+    resource.shareable_owner == self ||
+      shared_with_me.where(edit: true).exists?(edit: true, resource: resource) ||
+      groups.map{|g| g.shared_with_me.where(edit: true).exists?(edit: true, resource: resource) }.include?(true)
+  end
+
   #extend commentable
   def can_comment?
     true
