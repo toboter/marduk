@@ -15,21 +15,18 @@ class User < ApplicationRecord
     Thread.current[:current_user] = usr
   end
 
-  def can_edit?(resource) # overrides sharer can_edit?
+  # overrides sharer can_edit?
+  def can_edit?(resource)
     check_resource(resource)
     resource.shareable_owner == self ||
       shared_with_me.where(edit: true).exists?(edit: true, resource: resource) ||
-      groups.map{|g| g.shared_with_me.where(edit: true).exists?(edit: true, resource: resource) }.include?(true)
+      groups.map{|g| g.shared_with_me.where(edit: true).exists?(edit: true, resource: resource) }.include?(true) ||
+      app_admin
   end
 
-  #extend commentable
-  def can_comment?
-    true
-  end
-  #end extend
-
-  def can_create?
-    true
+  def is_owner?(resource)
+    check_resource(resource)
+    resource.shareable_owner == self || app_admin
   end
 
   def is_admin?

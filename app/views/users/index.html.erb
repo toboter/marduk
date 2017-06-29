@@ -3,7 +3,10 @@
     <tr>
       <th></th>
       <th>Username</th>
-      <th>admin?</th>
+      <th>Admin</th>
+      <th>Commenter</th>
+      <th>Creator</th>
+      <th>Publisher</th>
       <th>Groups</th>
     </tr>
   </thead>
@@ -20,6 +23,15 @@
         <%= simple_form_for [user], remote: true do |f| %>
         <td>
           <%= f.check_box :app_admin, { :onchange => "$(this.form).submit();" } unless user == current_user %>    
+        </td>
+        <td>
+          <%= f.check_box :app_commentator, { :onchange => "$(this.form).submit();" } %>    
+        </td>
+        <td>
+          <%= f.check_box :app_creator, { :onchange => "$(this.form).submit();" } %>    
+        </td>
+        <td>
+          <%= f.check_box :app_publisher, { :onchange => "$(this.form).submit();" } %>    
         </td>
         <td>
           <%= f.input :group_list, 

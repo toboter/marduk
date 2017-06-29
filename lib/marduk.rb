@@ -1,4 +1,5 @@
 require "marduk/engine"
+require "omniauth-oauth2"
 
 module Marduk
   extend ActiveSupport::Concern
