@@ -1,3 +1,3 @@
 module Marduk
-  VERSION = '0.0.5.beta'
+  VERSION = '0.0.6.beta'
 end
