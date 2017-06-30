@@ -98,3 +98,9 @@ Example:
 # User instance methods
 * `is_owner?(resource)`
 * `is_admin?`
+
+
+# Defines
+* `current_user`
+* before_filter `authorize`
+* sets `@access_token`

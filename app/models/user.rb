@@ -3,7 +3,7 @@ class User < ApplicationRecord
 
   has_many :memberships, dependent: :destroy
   has_many :groups, through: :memberships
-  has_many :record_activities
+  has_many :record_activities, foreign_key: :actor_id
 
   validates :name, uniqueness: true
 
@@ -18,19 +18,46 @@ class User < ApplicationRecord
   # overrides sharer can_edit?
   def can_edit?(resource)
     check_resource(resource)
-    resource.shareable_owner == self ||
+    (resource.shareable_owner == self ||
       shared_with_me.where(edit: true).exists?(edit: true, resource: resource) ||
       groups.map{|g| g.shared_with_me.where(edit: true).exists?(edit: true, resource: resource) }.include?(true) ||
+      app_admin) &&
+      !resource.published?
+  end
+
+  # overrides sharer can_read?
+  def can_read?(resource)
+    check_resource(resource)
+    resource.published? ||
+      resource.shareable_owner == self ||
+      shared_with_me.exists?(resource: resource) ||
+      groups.map{|g| g.shared_with_me.exists?(resource: resource) }.include?(true) ||
       app_admin
   end
 
-  def is_owner?(resource)
-    check_resource(resource)
-    resource.shareable_owner == self || app_admin
+  # extend enki
+  def is_owner?
+    record_activities.where(activity_type: 'Created').any? || 
+    app_admin
   end
+
+  def is_editor?
+    shared_with_me.where(edit: true).any? ||
+      groups.map{|g| g.shared_with_me.where(edit: true).any?}.include?(true) || 
+      app_admin
+  end
+  # ..
 
   def is_admin?
     app_admin
+  end
+
+  def is_creator?
+    app_creator
+  end
+
+  def is_publisher?
+    app_publisher
   end
 
   def group_list
