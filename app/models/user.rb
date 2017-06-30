@@ -1,4 +1,5 @@
 class User < ApplicationRecord
+  has_secure_token
   sharer
 
   has_many :memberships, dependent: :destroy

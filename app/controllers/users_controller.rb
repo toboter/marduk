@@ -1,7 +1,8 @@
 class UsersController < ApplicationController
+  require 'rest-client'
   before_action :authorize
-  before_action :administrative
-  before_action :set_user, only: [:show, :edit, :update, :destroy]
+  before_action :administrative, only: [:index, :update, :destroy]
+  before_action :set_user, only: [:update, :destroy]
 
   def index
     @users = User.all
@@ -15,10 +16,6 @@ class UsersController < ApplicationController
   # GET /users/new
   def new
     @user = User.new
-  end
-
-  # GET /users/1/edit
-  def edit
   end
 
   # POST /users
@@ -61,6 +58,22 @@ class UsersController < ApplicationController
     end
   end
 
+  def add_token_to_babili
+    current_user.regenerate_token if current_user
+    if current_user && current_user.token.present?
+      url = "#{Rails.application.secrets.provider_site}/api/oread_application_access_token"
+      host = request.base_url
+      begin
+        response = RestClient.post url, {token: current_user.token, host: host}, {:Authorization => "Bearer #{access_token.token}"}
+        redirect_to user_url, notice: response.code == 200 ? 'Token sent.' : 'An error occured.'
+      rescue RestClient::ExceptionWithResponse => e
+        redirect_to user_url, alert: "The Server ist returning #{e}. Perhaps you are not assigned to any projects. Service Token for babili not sent."
+      end
+    else
+      redirect_to user_url, alert: 'Something went wrong.'
+    end
+  end
+
   private
     # Use callbacks to share common setup or constraints between actions.
     def set_user
@@ -69,7 +82,7 @@ class UsersController < ApplicationController
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def user_params
-      params.require(:user).permit(:id, :username, :app_admin, :app_commentator, :app_creator, :app_publisher, :group_list => [])
+      params.require(:user).permit(:token, :id, :username, :app_admin, :app_commentator, :app_creator, :app_publisher, :group_list => [])
     end
 
 end

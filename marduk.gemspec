@@ -18,6 +18,8 @@ Gem::Specification.new do |s|
 
   s.add_dependency "rails", "~> 5.0.0"
   s.add_dependency "omniauth-oauth2"
+  s.add_dependency "rest-client"
+  s.add_dependency "simple_form"
 
   s.add_development_dependency "sqlite3"
 end

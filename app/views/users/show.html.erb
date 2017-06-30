@@ -1,0 +1,12 @@
+<% title "You are logged in as #{current_user.name}" %>
+
+<div class="well">
+<p>
+  Your personal API Access Token for this application is: <strong><%= current_user.token %></strong>
+</p>
+  <%= link_to 'Recreate Token and add to babili/oread/search', add_token_to_babili_user_path, class: 'btn btn-sm btn-warning' %>
+</div>
+
+<p class="text-muted">
+  Your personal access token for Babili is: <strong><%= @access_token.token %></strong>
+</p>
