@@ -10,7 +10,8 @@ class UsersController < ApplicationController
 
   # GET /users/1
   # GET /users/1.json
-  def show
+  def settings
+
   end
 
   # GET /users/new
@@ -65,12 +66,12 @@ class UsersController < ApplicationController
       host = request.base_url
       begin
         response = RestClient.post url, {token: current_user.token, host: host}, {:Authorization => "Bearer #{access_token.token}"}
-        redirect_to user_url, notice: response.code == 200 ? 'Token sent.' : 'An error occured.'
+        redirect_to settings_users_url, notice: response.code == 200 ? 'Token sent.' : 'An error occured.'
       rescue RestClient::ExceptionWithResponse => e
-        redirect_to user_url, alert: "The Server ist returning #{e}. Perhaps you are not assigned to any projects. Service Token for babili not sent."
+        redirect_to settings_users_url, alert: "The Server ist returning #{e}. Perhaps you are not assigned to any projects. Service Token for babili not sent."
       end
     else
-      redirect_to user_url, alert: 'Something went wrong.'
+      redirect_to settings_users_url, alert: 'Something went wrong.'
     end
   end
 
