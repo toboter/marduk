@@ -27,6 +27,8 @@ module Marduk
       end
     end
     
+    helper_method :current_user_read_abilities
+    
   end
   
   def init_session_per_page
@@ -49,6 +51,10 @@ module Marduk
 
   def administrative
     redirect_to root_url, alert: "You need administrative priviledges." if !current_user.app_admin
+  end
+
+  def current_user_read_abilities
+    @current_user_read_abilities = (current_user && access_token) ? access_token.get("/api/my/authorizations/read").parsed : []
   end
   
   # The current_user is logged out automatically and redirected to root if the access_token is expired.
