@@ -75,6 +75,29 @@ class UsersController < ApplicationController
     end
   end
 
+  def update_accessibilities
+    ability = current_user_app_crud_ability
+    user = current_user
+    current_user_projects.each do |project|
+      group = Group.where(name: project.name).first_or_create! do |g|
+        g.gid = project.id
+        g.provider = 'babili'
+      end
+      user.groups << group unless group.in?(user.groups)
+    end
+    user.app_admin = ability.can_manage
+    user.app_creator = ability.can_create
+    user.app_publisher = ability.can_publish
+    user.app_commentator = ability.can_comment
+    respond_to do |format|
+      if user.save
+        format.html { redirect_to settings_users_url, notice: 'Your accessibilities have been successfully updated.' }
+      else
+        format.html { redirect_to settings_users_url, notice: 'An error occured.' }
+      end
+    end
+  end
+
   private
     # Use callbacks to share common setup or constraints between actions.
     def set_user

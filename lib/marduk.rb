@@ -27,7 +27,7 @@ module Marduk
       end
     end
     
-    helper_method :current_user_read_abilities
+    helper_method :current_user_search_abilities, :current_user_app_crud_ability, :current_user_projects
     
   end
   
@@ -53,10 +53,18 @@ module Marduk
     redirect_to root_url, alert: "You need administrative priviledges." if !current_user.app_admin
   end
 
-  def current_user_read_abilities
-    @current_user_read_abilities = (current_user && access_token) ? access_token.get("/api/my/authorizations/read").parsed : []
+  def current_user_search_abilities
+    @current_user_search_abilities = JSON.parse(((current_user && access_token) ? access_token.get("/api/my/accessibilities/search").body : []), object_class: OpenStruct)
   end
-  
+
+  def current_user_projects
+    @current_user_projects = JSON.parse(((current_user && access_token) ? access_token.get("/api/my/accessibilities/projects").body : []), object_class: OpenStruct)
+  end
+
+  def current_user_app_crud_ability
+    @current_user_app_crud_ability = JSON.parse(((current_user && access_token) ? access_token.get("/api/my/accessibilities/crud/#{Rails.application.secrets.client_id}").body : []), object_class: OpenStruct)
+  end
+
   # The current_user is logged out automatically and redirected to root if the access_token is expired.
   def check_token!
     if current_user && access_token && access_token.expired?

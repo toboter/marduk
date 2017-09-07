@@ -4,11 +4,21 @@
 <p>
   Your personal API Access Token for this application is: <strong><%= current_user.token %></strong>
 </p>
-  <%= link_to 'Recreate Token and add to babili/oread/search', add_token_to_babili_users_path, class: 'btn btn-sm btn-warning' %>
+  <%= link_to 'Recreate Token and send to babili/oread/search', add_token_to_babili_users_path, class: 'btn btn-sm btn-warning' %>
+  <%= link_to 'Renew your accessibilities', get_accessibilities_users_path, class: 'btn btn-sm btn-info' %>
 </div>
 
 <p class="text-muted">
   Your personal access token for Babili is: <strong><%= @access_token.token %></strong>
 </p>
 
-<%= current_user_read_abilities %>
+<%= current_user.inspect %>
+<br><br>
+my/search
+<%= current_user_search_abilities %>
+<br><br>
+my/crud
+<%= current_user_app_crud_ability %>
+<br><br>
+my/projects
+<%= current_user_projects.inspect %>

@@ -6,6 +6,7 @@ Rails.application.routes.draw do
 
   resources :users, path: '/admin/users' do
     get 'add_token_to_babili', to: 'users#add_token_to_babili', on: :collection
+    get 'get_accessibilities', to: 'users#update_accessibilities', on: :collection
     get 'settings', to: 'users#settings', on: :collection
   end
 end
