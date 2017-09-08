@@ -60,18 +60,17 @@ class UsersController < ApplicationController
   end
 
   def add_token_to_babili
-    current_user.regenerate_token if current_user
-    if current_user && current_user.token.present?
+    if current_user.regenerate_token
       url = "#{Rails.application.secrets.provider_site}/api/oread_application_access_token"
       host = request.base_url
       begin
         response = RestClient.post url, {token: current_user.token, host: host}, {:Authorization => "Bearer #{access_token.token}"}
-        redirect_to settings_users_url, notice: response.code == 200 ? 'Token sent.' : 'An error occured.'
+        redirect_to settings_users_url, notice: response.code == 200 ? 'Token received.' : 'An error occured.'
       rescue RestClient::ExceptionWithResponse => e
-        redirect_to settings_users_url, alert: "The Server ist returning #{e}. Perhaps you are not assigned to any projects. Service Token for babili not sent."
+        redirect_to settings_users_url, alert: "The Server ist returning #{e}. Token not sent."
       end
     else
-      redirect_to settings_users_url, alert: 'Something went wrong.'
+      redirect_to settings_users_url, alert: 'Token not created.'
     end
   end
 
@@ -89,6 +88,7 @@ class UsersController < ApplicationController
     user.app_creator = ability.can_create
     user.app_publisher = ability.can_publish
     user.app_commentator = ability.can_comment
+
     respond_to do |format|
       if user.save
         format.html { redirect_to settings_users_url, notice: 'Your accessibilities have been successfully updated.' }
