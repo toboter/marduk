@@ -61,11 +61,12 @@ class UsersController < ApplicationController
 
   def add_token_to_babili
     if current_user.regenerate_token
-      url = "#{Rails.application.secrets.provider_site}/api/oread_application_access_token"
-      host = request.base_url
+      url = "#{Rails.application.secrets.provider_site}/api/oread_applications/set_access_token"
+      host = request.protocol + request.host
+      port = request.port
       begin
-        response = RestClient.post url, {token: current_user.token, host: host}, {:Authorization => "Bearer #{access_token.token}"}
-        redirect_to settings_users_url, notice: response.code == 200 ? 'Token received.' : 'An error occured.'
+        response = RestClient.post url, {token: current_user.token, host: host, port: port}, {:Authorization => "Bearer #{access_token.token}"} 
+        redirect_to settings_users_url, notice: response.code == 200 ? "Token for #{JSON.parse(response.body)['name']} received." : 'An error occured.'
       rescue RestClient::ExceptionWithResponse => e
         redirect_to settings_users_url, alert: "The Server ist returning #{e}. Token not sent."
       end
@@ -77,13 +78,18 @@ class UsersController < ApplicationController
   def update_accessibilities
     ability = current_user_app_crud_ability
     user = current_user
+    user.memberships.destroy_all
+    groups = []
+
     current_user_projects.each do |project|
       group = Group.where(name: project.name).first_or_create! do |g|
         g.gid = project.id
         g.provider = 'babili'
       end
-      user.groups << group unless group.in?(user.groups)
+      groups << group
     end
+
+    user.groups = groups
     user.app_admin = ability.can_manage
     user.app_creator = ability.can_create
     user.app_publisher = ability.can_publish

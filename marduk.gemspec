@@ -20,6 +20,7 @@ Gem::Specification.new do |s|
   s.add_dependency "omniauth-oauth2"
   s.add_dependency "rest-client"
   s.add_dependency "simple_form"
+  s.add_dependency 'active_model_serializers', '~> 0.10.0'
 
   s.add_development_dependency "sqlite3"
 end

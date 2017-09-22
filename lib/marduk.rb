@@ -54,11 +54,12 @@ module Marduk
   end
 
   def current_user_search_abilities
-    @current_user_search_abilities = JSON.parse(((current_user && access_token) ? access_token.get("/api/my/accessibilities/search").body : []), object_class: OpenStruct)
+    @current_user_search_abilities = JSON.parse(((current_user && access_token) ? access_token.get("/api/my/accessibilities/searchable").body : []), object_class: OpenStruct)
   end
 
   def current_user_projects
-    @current_user_projects = JSON.parse(((current_user && access_token) ? access_token.get("/api/my/accessibilities/projects").body : []), object_class: OpenStruct)
+    @current_user_projects = JSON.parse(((current_user && access_token) ? access_token.get("/api/my/accessibilities/projects/#{Rails.application.secrets.client_id}").body : []), object_class: OpenStruct)
+    # @current_user_projects = projects.select{ |p| p.oauth_application_uids.include?(Rails.application.secrets.client_id) unless p.oauth_application_uids.nil? }
   end
 
   def current_user_app_crud_ability

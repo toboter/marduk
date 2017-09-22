@@ -13,7 +13,7 @@
           Personal API Access Token for this application is: <strong><%= current_user.token %></strong>
         </p>
         <div id="current-user-app-accessibilities" style="margin-top:30px">
-          <%= content_tag :h5, "Current accesssibilities are:" %>
+          <%= content_tag :h5, "Current accessibilities are:" %>
           <ul>
             <%= content_tag :li, 'manage everything' if current_user.is_admin? %>
             <%= content_tag :li, 'create records' if current_user.is_creator? %>

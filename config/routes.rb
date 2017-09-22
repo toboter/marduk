@@ -9,4 +9,11 @@ Rails.application.routes.draw do
     get 'get_accessibilities', to: 'users#update_accessibilities', on: :collection
     get 'settings', to: 'users#settings', on: :collection
   end
+
+  namespace :api do
+    scope :hooks do
+      get 'update_accessibilities', to: 'webhooks#update_user_accessibilities'
+      get 'upload_local_user_token', to: 'webhooks#add_token_to_babili'
+    end
+  end
 end
