@@ -16,7 +16,7 @@ class SessionsController < ApplicationController
       end
 
     end
-    user.update(email: auth["info"]["email"], name: auth["info"]["name"], gender: auth["info"]["gender"], birthday: auth["info"]["birthday"])
+    user.update(email: auth["info"]["email"], name: auth["info"]["name"], gender: auth["info"]["gender"], birthday: auth["info"]["birthday"], image_thumb_url: auth["info"]["image_thumb_50"])
     session[:user_id] = user.id
     session[:access_token] = auth["credentials"]["token"]
 

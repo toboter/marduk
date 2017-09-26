@@ -15,7 +15,7 @@
     <% @users.each do |user| %>
       <tr>
         <td>
-          img
+          <%= image_tag(user.image_thumb_url, class: 'img-circle') if user.image_thumb_url %>
         </td>
         <td id="user_<%= user.id %>_app_admin">
           <%= link_to user.name, '' %>
