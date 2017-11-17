@@ -28,7 +28,7 @@ module Marduk
     end
     
     helper_method :current_user_search_abilities, :current_user_app_crud_ability, :current_user_projects
-    
+
   end
   
   def init_session_per_page
