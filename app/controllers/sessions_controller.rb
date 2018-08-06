@@ -7,7 +7,7 @@ class SessionsController < ApplicationController
     user = User.where(provider: auth["provider"], uid: auth["uid"]).first_or_create! do |u|
       u.regenerate_token
       # adding the initial token to the search feature in babili when signing up the first time start
-      url = "#{Rails.application.secrets.provider_site}/api/oread_applications/set_access_token"
+      url = "#{Rails.application.secrets.provider_site}/v1/oread_applications/set_access_token"
       host = request.protocol + request.host
       port = request.port
       begin
@@ -20,8 +20,8 @@ class SessionsController < ApplicationController
     end
    
     # get accessibilities on every log in start
-    crud_url = "#{Rails.application.secrets.provider_site}/api/my/accessibilities/crud/#{Rails.application.secrets.client_id}"
-    projects_url = "#{Rails.application.secrets.provider_site}/api/my/accessibilities/projects/#{Rails.application.secrets.client_id}"
+    crud_url = "#{Rails.application.secrets.provider_site}/v1/my/accessibilities/crud/#{Rails.application.secrets.client_id}"
+    projects_url = "#{Rails.application.secrets.provider_site}/v1/my/accessibilities/projects/#{Rails.application.secrets.client_id}"
 
     crud_response = RestClient.get crud_url, {:Authorization => "Bearer #{token}"}
     crud = JSON.parse(crud_response.body, object_class: OpenStruct)

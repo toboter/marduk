@@ -4,11 +4,11 @@ class Api::WebhooksController < ActionController::API
 
   before_action :set_token
 
-  # application_url/api/hooks/update_accessibilities?access_token=babili-token
+  # application_url/v1/hooks/update_accessibilities?access_token=babili-token
   def update_user_accessibilities
-    user_url = "#{Rails.application.secrets.provider_site}/api/me"
-    crud_url = "#{Rails.application.secrets.provider_site}/api/my/accessibilities/crud/#{Rails.application.secrets.client_id}"
-    projects_url = "#{Rails.application.secrets.provider_site}/api/my/accessibilities/projects/#{Rails.application.secrets.client_id}"
+    user_url = "#{Rails.application.secrets.provider_site}/v1/me"
+    crud_url = "#{Rails.application.secrets.provider_site}/v1/my/accessibilities/crud/#{Rails.application.secrets.client_id}"
+    projects_url = "#{Rails.application.secrets.provider_site}/v1/my/accessibilities/projects/#{Rails.application.secrets.client_id}"
 
     user_response = RestClient.get user_url, {:Authorization => "Bearer #{@token}"}
     user_parsed = JSON.parse(user_response.body)
@@ -49,15 +49,15 @@ class Api::WebhooksController < ActionController::API
     # fragt nach user.accessibilities mit access token
   end
 
-  # application_url/api/hooks/upload_local_user_token?access_token=babili-token
+  # application_url/v1/hooks/upload_local_user_token?access_token=babili-token
   def add_token_to_babili
-    user_url = "#{Rails.application.secrets.provider_site}/api/me"
+    user_url = "#{Rails.application.secrets.provider_site}/v1/me"
     user_response = RestClient.get user_url, {:Authorization => "Bearer #{@token}"}
     user_parsed = JSON.parse(user_response.body)
 
     user = User.where(provider: 'babili', uid: user_parsed['id']).first
 
-    url = "#{Rails.application.secrets.provider_site}/api/oread_applications/set_access_token"
+    url = "#{Rails.application.secrets.provider_site}/v1/oread_applications/set_access_token"
     host = request.protocol + request.host
     port = request.port
     begin

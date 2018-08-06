@@ -61,7 +61,7 @@ class UsersController < ApplicationController
 
   def add_token_to_babili
     if current_user.regenerate_token
-      url = "#{Rails.application.secrets.provider_site}/api/oread_applications/set_access_token"
+      url = "#{Rails.application.secrets.provider_site}/v1/oread_applications/set_access_token"
       host = request.protocol + request.host
       port = request.port
       begin
