@@ -6,7 +6,7 @@ class Api::WebhooksController < ActionController::API
 
   # application_url/v1/hooks/update_accessibilities?access_token=babili-token
   def update_user_accessibilities
-    user_url = "#{Rails.application.secrets.provider_site}/v1/me"
+    user_url = "#{Rails.application.secrets.provider_site}/v1/user"
     crud_url = "#{Rails.application.secrets.provider_site}/v1/my/accessibilities/crud/#{Rails.application.secrets.client_id}"
     projects_url = "#{Rails.application.secrets.provider_site}/v1/my/accessibilities/projects/#{Rails.application.secrets.client_id}"
 
@@ -51,7 +51,7 @@ class Api::WebhooksController < ActionController::API
 
   # application_url/v1/hooks/upload_local_user_token?access_token=babili-token
   def add_token_to_babili
-    user_url = "#{Rails.application.secrets.provider_site}/v1/me"
+    user_url = "#{Rails.application.secrets.provider_site}/v1/user"
     user_response = RestClient.get user_url, {:Authorization => "Bearer #{@token}"}
     user_parsed = JSON.parse(user_response.body)
 
